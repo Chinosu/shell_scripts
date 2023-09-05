@@ -1,0 +1,101 @@
+#!/bin/bash
+
+# Function to build and run a file using dcc and then delete the executable.
+run_dcc() {
+  # Use read to split the input string
+  local filename
+  local params
+  read -r filename params <<< "$1"
+
+  if [ -f "$filename" ]; then
+    local output=$(dcc $filename $params -fsyntax-only 2>&1)
+
+    local temp_filename=$(generate_unique_filename)
+    dcc $filename $params -o "$temp_filename" 2>&1
+
+    # Check if output is empty (if dcc returned zero warnings or errors)
+    if [ -z "$output" ]; then
+      ./"$temp_filename"
+    fi
+
+    # Check if temp_filename exists in the current directory
+    if [ -f "$temp_filename" ]; then
+      rm ./"$temp_filename"
+    fi
+  else
+    echo "File '$filename' does not exist."
+    exit 1
+  fi
+}
+
+# Function to find the most recently modified .c file
+find_latest_c_file() {
+  # Current directory only
+  # find . -maxdepth 1 -name "*.c" -printf '%T@ %p\n' \
+  #   | sort -k1,1nr \
+  #   | awk '{print substr($0, index($0,$2))}' \
+  #   | head -n 1
+
+  # Every directory
+  find ~/_ -name "*.c" -printf '%T@ %p\n' \
+    | sort -k1,1nr \
+    | awk '{print substr($0, index($0,$2))}' \
+    | head -n 1
+}
+
+generate_unique_filename() {
+  local base="$1"
+  if [ -n "$base" ]; then
+    base="${base}-"
+  fi
+
+  local extension="$2"
+  if [ -n "$extension" ]; then
+    extension=".${extension}"
+  fi
+
+  while true; do
+    # Generate a random file name 
+    # (10-character long random alphanumeric string)
+    local random_name=$(
+      cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 10 | head -n 1 \
+    )
+
+    # Formulate the full name
+    local random_filename="${base}${random_name}${extension}"
+    
+    # Check if the file name exists in the current directory
+    if [[ ! -e "${random_filename}" ]]; then
+      echo "${random_filename}"
+      break
+    fi
+  done
+}
+
+# _____________________________________________________________________________
+# Main script logic
+
+# Check if dcc is installed
+if ! command -v dcc &> /dev/null; then
+  echo "dcc could not be found, please install it first."
+  echo "(https://github.com/COMP1511UNSW/dcc)"
+  exit 1
+fi
+
+# Determine the params
+if [ $# -gt 0 ]; then
+  # Remove '-o <word>'
+  params=$(echo "$*" | sed -E 's/-o [^[:space:]]+//g')
+else
+  params=$(find_latest_c_file)
+
+  if [ -z "$params" ]; then
+    echo "No .c files found."
+    exit 1
+  fi
+fi
+
+# Run dcc
+run_dcc "$params"
+
+exit 0
