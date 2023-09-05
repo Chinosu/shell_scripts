@@ -7,24 +7,24 @@ run_dcc() {
   local params
   read -r filename params <<< "$1"
 
-  if [ -f "$filename" ]; then
-    local output=$(dcc $filename $params -fsyntax-only 2>&1)
-
-    local temp_filename=$(generate_unique_filename)
-    dcc $filename $params -o "$temp_filename" 2>&1
-
-    # Check if output is empty (if dcc returned zero warnings or errors)
-    if [ -z "$output" ]; then
-      ./"$temp_filename"
-    fi
-
-    # Check if temp_filename exists in the current directory
-    if [ -f "$temp_filename" ]; then
-      rm ./"$temp_filename"
-    fi
-  else
+  if [ ! -f "$filename" ]; then
     echo "File '$filename' does not exist."
     exit 1
+  fi
+
+  local output=$(dcc $filename $params -fsyntax-only 2>&1)
+
+  local temp_filename=$(generate_unique_filename)
+  dcc $filename $params -o "$temp_filename" 2>&1
+
+  # Check if output is empty (if dcc returned zero warnings or errors)
+  if [ -z "$output" ]; then
+    ./"$temp_filename"
+  fi
+
+  # Check if temp_filename exists in the current directory
+  if [ -f "$temp_filename" ]; then
+    rm ./"$temp_filename"
   fi
 }
 
