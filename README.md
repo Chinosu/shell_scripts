@@ -1,9 +1,16 @@
-# shell_scripts
+# Table of Contents
+
+- [Introduction](#introduction)
+- [dcc!](#dcc!)
+- [spim!](#spim!)
+- [format!](#format!)
+- [Installation](#installation)
+
+
+# Introduction
 Collection of shell scripts made by yours truly. 
 
-**Note:** these scripts are written for Linux, and may not work on macOS and Windows.
-
-
+**Note:** these scripts are written for Linux, and may not work on macOS or Windows.
 
 
 ## dcc!
@@ -48,6 +55,22 @@ This will find the most recently edited `.asm` or `.s` file in the `~/_` directo
 spim! <file_name> <params>
 ```
 This will simulate the given `file_name` file with the given `params` with spim.
+
+
+
+
+
+## format!
+Aims to quickly format .c (and .cpp?) files with `clang-format`. Usage:
+```bash
+format!
+```
+Formats the most recently edited .c file in the directory `~/_` (can be changed in the script).
+
+```bash
+format! <filename>
+```
+Formats the specified .c file.
 
 
 
