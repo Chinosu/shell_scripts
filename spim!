@@ -7,18 +7,18 @@ run_spim() {
   local params
   read -r filename params <<< "$1"
 
-  if [ -f "$filename" ]; then
-    spim -file $filename $params \
-      | grep -v \
-        -e "SPIM Version 8.0 of January 8, 2010" \
-        -e "Copyright 1990-2010, James R. Larus." \
-        -e "All Rights Reserved." \
-        -e "See the file README for a full copyright notice." \
-        -e "Loaded: /usr/lib/spim/exceptions.s"
-  else
+  if [ ! -f "$filename" ]; then
     echo "File '$filename' does not exist."
     exit 1
   fi
+
+  spim -file $filename $params \
+    | grep -v \
+      -e "SPIM Version 8.0 of January 8, 2010" \
+      -e "Copyright 1990-2010, James R. Larus." \
+      -e "All Rights Reserved." \
+      -e "See the file README for a full copyright notice." \
+      -e "Loaded: /usr/lib/spim/exceptions.s"
 }
 
 # Function to find the most recently modified .asm or .s file
