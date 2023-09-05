@@ -1,0 +1,80 @@
+#!/bin/bash
+
+# Format rules to confom to COMP1511 style
+# Function to format .c (or .cpp?) file to COMP1511 style.
+format() {
+    local filename="$1"
+
+    if [ ! -f "$filename" ]; then
+        echo "File '$filename' does not exist."
+        exit 1
+    fi
+
+    clang-format -i "$filename" --style="{
+        BasedOnStyle: LLVM,
+        AlignAfterOpenBracket: Align,
+        AlignOperands: Align,
+        BreakBeforeBinaryOperators: true,
+        AllowAllArgumentsOnNextLine: false,
+        AllowAllParametersOfDeclarationOnNextLine: false,
+        AllowShortBlocksOnASingleLine: Never,
+        AllowShortEnumsOnASingleLine: false,
+        AllowShortFunctionsOnASingleLine: None,
+        AllowShortIfStatementsOnASingleLine: Never,
+        BinPackArguments: false,
+        BinPackParameters: false,
+        BreakBeforeBinaryOperators: All,
+        BreakBeforeBraces: Attach,
+        BreakStringLiterals: true,
+        ColumnLimit: 79,
+        IndentWidth: 4,
+        IndentWrappedFunctionNames: true,
+        MaxEmptyLinesToKeep: 2,
+        PointerAlignment: Right,
+        ReflowComments: true,
+        SpaceAfterCStyleCast: true,
+        SpaceAfterLogicalNot: false,
+        SpaceBeforeCpp11BracedList: true,
+    }"
+}
+
+# Function to find the most recently modified .c file
+find_latest_c_file() {
+  # Current directory only
+  # find . -maxdepth 1 -name "*.c" -printf '%T@ %p\n' \
+  #   | sort -k1,1nr \
+  #   | awk '{print substr($0, index($0,$2))}' \
+  #   | head -n 1
+
+  # Every directory
+  find ~/_ -name "*.c" -printf '%T@ %p\n' \
+    | sort -k1,1nr \
+    | awk '{print substr($0, index($0,$2))}' \
+    | head -n 1
+}
+
+# _____________________________________________________________________________
+# Main script logic
+
+# Check if clang-format is installed
+if ! command -v clang-format &> /dev/null; then
+  echo "clang-format could not be found, please install it first."
+  exit 1
+fi
+
+# Determine the params
+if [ $# -gt 0 ]; then
+  filename="$1"
+else
+  filename=$(find_latest_c_file)
+
+  if [ -z "$filename" ]; then
+    echo "No .c files found."
+    exit 1
+  fi
+fi
+
+# Run format
+format "$filename"
+
+exit 0
