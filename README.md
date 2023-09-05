@@ -1,9 +1,9 @@
 # Table of Contents
 
 - [Introduction](#introduction)
-- [dcc!](#dcc!)
-- [spim!](#spim!)
-- [format!](#format!)
+- [dcc!](#dcc)
+- [spim!](#spim)
+- [format!](#format)
 - [Installation](#installation)
 
 
