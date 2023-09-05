@@ -13,7 +13,7 @@ Collection of shell scripts made by yours truly.
 **Note:** these scripts are written for Linux, and may not work on macOS or Windows.
 
 
-## dcc!
+# dcc!
 Aims to simplify the build-and-run process of 'toy' to medium sized C programs, like `fibonacci.c`, `cs_bookshelf.c`, etc. 
 
 The script properly handles warnings and errors from `dcc` and preserves `dcc`'s text formatting.
@@ -35,7 +35,7 @@ This will perform the build, run, and delete process for the file specified by `
 
 
 
-## spim!
+# spim!
 Aims to simplify the `spim` command and hide the text overhead it produces. Specifically, it removes the text:
 ```
 SPIM Version 8.0 of January 8, 2010
@@ -60,7 +60,7 @@ This will simulate the given `file_name` file with the given `params` with spim.
 
 
 
-## format!
+# format!
 Aims to quickly format .c (and .cpp?) files with `clang-format`. Usage:
 ```bash
 format!
