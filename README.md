@@ -36,7 +36,8 @@ This will perform the build, run, and delete process for the file specified by `
 
 
 # spim!
-Aims to simplify the `spim` command and hide the text overhead it produces. Specifically, it removes the text:
+Aims to simplify the `spim` command. 
+**NOTE:** It no longer hides the text overhead it produces, like:
 ```
 SPIM Version 8.0 of January 8, 2010
 Copyright 1990-2010, James R. Larus.
@@ -44,6 +45,7 @@ All Rights Reserved.
 See the file README for a full copyright notice.
 Loaded: /usr/lib/spim/exceptions.s
 ```
+Since it inteferes with interactive MIPS scripts. (Ones that do IO.)
 
 The script can be used in two ways:
 ```bash
