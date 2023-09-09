@@ -82,17 +82,17 @@ if ! command -v dcc &> /dev/null; then
   exit 1
 fi
 
-# Determine the params
-if [ $# -gt 0 ]; then
-  # Remove '-o <word>'
-  params=$(echo "$*" | sed -E 's/-o [^[:space:]]+//g')
-else
-  params=$(find_latest_c_file)
+# Remove '-o <word>'
+params=$(echo "$*" | sed -E 's/-o [^[:space:]]+//g')
 
-  if [ -z "$params" ]; then
+# Check if first argument does not end with .c
+if [[ "$1" != *.c ]]; then
+  latest_c_file=$(find_latest_c_file)
+  if [ -z "$latest_c_file" ]; then
     echo "No .c files found."
     exit 1
   fi
+  params="$latest_c_file $params"
 fi
 
 # Run dcc
