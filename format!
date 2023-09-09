@@ -2,52 +2,78 @@
 
 # Format rules to confom to COMP1511 style
 # Function to format .c (or .cpp?) file to COMP1511 style.
-format() {
-    local filename="$1"
+format_c() {
+  # Check if clang-format is installed
+  if ! command -v clang-format &> /dev/null; then
+    echo "clang-format could not be found, please install it first."
+    exit 1
+  fi
 
-    if [ ! -f "$filename" ]; then
-        echo "File '$filename' does not exist."
-        exit 1
-    fi
+  local filename="$1"
 
-    clang-format -i "$filename" --style="{
-        BasedOnStyle: LLVM,
-        AlignAfterOpenBracket: Align,
-        AlignOperands: Align,
-        BreakBeforeBinaryOperators: true,
-        AllowAllArgumentsOnNextLine: false,
-        AllowAllParametersOfDeclarationOnNextLine: false,
-        AllowShortBlocksOnASingleLine: Never,
-        AllowShortEnumsOnASingleLine: false,
-        AllowShortFunctionsOnASingleLine: None,
-        AllowShortIfStatementsOnASingleLine: Never,
-        BinPackArguments: false,
-        BinPackParameters: false,
-        BreakBeforeBinaryOperators: All,
-        BreakBeforeBraces: Attach,
-        BreakStringLiterals: true,
-        ColumnLimit: 79,
-        IndentWidth: 4,
-        IndentWrappedFunctionNames: true,
-        MaxEmptyLinesToKeep: 2,
-        PointerAlignment: Right,
-        ReflowComments: true,
-        SpaceAfterCStyleCast: true,
-        SpaceAfterLogicalNot: false,
-        SpaceBeforeCpp11BracedList: true,
-    }"
+  if [ ! -f "$filename" ]; then
+    echo "File '$filename' does not exist."
+    exit 1
+  fi
+
+  clang-format -i "$filename" --style="{
+    BasedOnStyle: LLVM,
+    AlignAfterOpenBracket: Align,
+    AlignOperands: Align,
+    BreakBeforeBinaryOperators: true,
+    AllowAllArgumentsOnNextLine: false,
+    AllowAllParametersOfDeclarationOnNextLine: false,
+    AllowShortBlocksOnASingleLine: Never,
+    AllowShortEnumsOnASingleLine: false,
+    AllowShortFunctionsOnASingleLine: None,
+    AllowShortIfStatementsOnASingleLine: Never,
+    BinPackArguments: false,
+    BinPackParameters: false,
+    BreakBeforeBinaryOperators: All,
+    BreakBeforeBraces: Attach,
+    BreakStringLiterals: true,
+    ColumnLimit: 79,
+    IndentWidth: 4,
+    IndentWrappedFunctionNames: true,
+    MaxEmptyLinesToKeep: 2,
+    PointerAlignment: Right,
+    ReflowComments: true,
+    SpaceAfterCStyleCast: true,
+    SpaceAfterLogicalNot: false,
+    SpaceBeforeCpp11BracedList: true,
+  }"
+}
+
+format_asm() {
+  if [ ! -f "$filename" ]; then
+    echo "File '$filename' does not exist."
+    exit 1
+  fi
+
+  local filename="$1"
+
+  # Check if python3 is installed
+  if ! command -v python3 &> /dev/null; then
+    echo "python3 could not be found, please install it first."
+    exit 1
+  fi
+
+  # Assume the location of mips_formatter
+  formatter_path="../mips_formatter"
+
+  python3 "$formatter_path"/main.py "$filename"
 }
 
 # Function to find the most recently modified .c file
-find_latest_c_file() {
+find_latest_c_or_asm_file() {
   # Current directory only
-  # find . -maxdepth 1 -name "*.c" -printf '%T@ %p\n' \
+  # find . -maxdepth 1 \( -name "*.c" -o -name "*.asm" -o -name "*.s" \) -printf '%T@ %p\n' \
   #   | sort -k1,1nr \
   #   | awk '{print substr($0, index($0,$2))}' \
   #   | head -n 1
 
   # Every directory
-  find ~/_ -name "*.c" -printf '%T@ %p\n' \
+  find ~/_ \( -name "*.c" -o -name "*.asm" -o -name "*.s" \) -printf '%T@ %p\n' \
     | sort -k1,1nr \
     | awk '{print substr($0, index($0,$2))}' \
     | head -n 1
@@ -56,25 +82,27 @@ find_latest_c_file() {
 # _____________________________________________________________________________
 # Main script logic
 
-# Check if clang-format is installed
-if ! command -v clang-format &> /dev/null; then
-  echo "clang-format could not be found, please install it first."
-  exit 1
-fi
 
 # Determine the params
 if [ $# -gt 0 ]; then
   filename="$1"
 else
-  filename=$(find_latest_c_file)
+  filename=$(find_latest_c_or_asm_file)
 
   if [ -z "$filename" ]; then
-    echo "No .c files found."
+    echo "No .c, .asm, or .s files found."
     exit 1
   fi
 fi
 
-# Run format
-format "$filename"
+# Run the right format
+if [[ "$filename" == *.c ]]; then
+  format_c "$filename"
+elif [[ $filename == *.s ]] || [[ $filename == *.asm ]]; then
+  format_asm "$filename"
+else
+  echo "Filename is neither .c, .asm, nor .s."
+  exit 1
+fi
 
 exit 0
