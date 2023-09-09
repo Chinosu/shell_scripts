@@ -21,45 +21,43 @@ The script properly handles warnings and errors from `dcc` and preserves `dcc`'s
 The script can be used in two ways:
 
 ```bash
-dcc!
+dcc! <params>
 ```
-This will build an executable from the most recently edited `.c` file in the directory and its subdirectories using `dcc`, then run and delete it. The directory to search is set to `~/_` by default and can be changed by modifying the script. 
 
 ```bash
-dcc! <file_name> <params>
+dcc! <file_name>.c <params>
 ```
-This will perform the build, run, and delete process for the file specified by `file_name` with the specified `params`. Note that output arguments ("`-o <word>`") are ignored.
+When `dcc!` is run with a `.c` file as its first parameter it will build that file with the provided `params`, run, and then delete it. Note that `'-o <word>'` arguments are discarded. 
 
+If a `.c` file is not its first parameter, it will perform the same action but with the most recently edited `.c` file in the `~/_` directory and its subdirectories. 
 
+You can change the directory to search by editing the script. 
 
-
+Note that `params` can be nothing, so the following is completely valid.
+```bash
+dcc!
+```
 
 
 # spim!
-Aims to simplify the `spim` command. 
-**NOTE:** It no longer hides the text overhead it produces, like:
+Aims to simplify the `spim` command. The script can be used in two ways:
+```bash
+spim! <params>
 ```
-SPIM Version 8.0 of January 8, 2010
-Copyright 1990-2010, James R. Larus.
-All Rights Reserved.
-See the file README for a full copyright notice.
-Loaded: /usr/lib/spim/exceptions.s
-```
-Since it inteferes with interactive MIPS scripts. (Ones that do IO.)
 
-The script can be used in two ways:
+```bash
+spim! <file_name>(.s|.asm) <params>
+```
+When a `.s` or `.asm` file is specified as its first parameter it will simulate that file with the given `params` using spim. 
+
+If no such file is provided, it will simulate the most recently edited `.asm` or `.s` file in the `~/_` directory and its subdirectories. 
+
+You can change the directory to search by editing the script.
+
+Note that `params` can be nothing, so the following is completely valid.
 ```bash
 spim!
 ```
-This will find the most recently edited `.asm` or `.s` file in the `~/_` directory (which can be changed by modifying the script) and its subdirectory, and simulate it with `spim`.
-
-```bash
-spim! <file_name> <params>
-```
-This will simulate the given `file_name` file with the given `params` with spim.
-
-
-
 
 
 # format!
