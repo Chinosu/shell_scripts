@@ -61,18 +61,29 @@ spim!
 
 
 # format!
-Aims to quickly format .c (and .cpp?) files with `clang-format`. Usage:
+Aims to quickly format .c (and .cpp?), .s, and .asm files using `clang-format` and [mips_formatter](https://github.com/Chinosu/mips_formatter). Usage:
 ```bash
 format!
 ```
-Formats the most recently edited .c file in the directory `~/_` (can be changed in the script).
+Formats the most recently edited .c, .s, or .asm file in the directory `~/_` and its subdirectories (can be changed in the script).
 
 ```bash
-format! <filename>
+format! <filename>(.c|.s|.asm)
 ```
-Formats the specified .c file.
+Formats the specified .c, .s, or .asm file.
 
+**Note:** `format!` assumes that `mips_formatter` is located like such:
 
+```
+parent/
+├─ mips_formatter/
+│  ├─ main.py
+│  ├─ ...
+├─ shell_scripts/
+│  ├─ format!
+│  ├─ ...
+```
+You can modify this in `format!` if you want.
 
 
 
