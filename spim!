@@ -46,16 +46,16 @@ if ! command -v spim &> /dev/null; then
   exit 1
 fi
 
-# Determine the filename
-if [ $# -gt 0 ]; then
-  params="$*"
-else
-  params=$(find_latest_asm_file)
+params="$*"
 
-  if [ -z "$params" ]; then
+# Check if first argument does not end with .s or .asm
+if [[ $1 != *.s ]] && [[ $1 != *.asm ]]; then
+  latest_asm_file=$(find_latest_asm_file)
+  if [ -z "$latest_asm_file" ]; then 
     echo "No .asm or .s files found."
     exit 1
   fi
+  params="$latest_asm_file $params"
 fi
 
 # Run SPIM
