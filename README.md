@@ -34,6 +34,8 @@ If a `.c` file is not its first parameter, it will perform the same action but w
 You can change the directory to search by editing the script. 
 
 Note that `params` can be nothing, so the following is completely valid.
+
+Note that `dcc!` does not run the produced executable if `dcc` outputs a warning.
 ```bash
 dcc!
 ```
