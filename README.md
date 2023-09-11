@@ -14,7 +14,7 @@ Collection of shell scripts made by yours truly.
 
 
 # dcc!
-Aims to simplify the build-and-run process of 'toy' to medium sized C programs, like `fibonacci.c`, `cs_bookshelf.c`, etc. 
+Aims to simplify the build-and-run process C programs. 
 
 The script properly handles warnings and errors from `dcc` and preserves `dcc`'s text formatting.
 
