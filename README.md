@@ -14,7 +14,7 @@ Collection of shell scripts made by yours truly.
 
 
 # dcc!
-Aims to simplify the build-and-run process C programs. 
+Simplifies the build-and-run process C programs. 
 
 The script properly handles warnings and errors from `dcc` and preserves `dcc`'s text formatting.
 
@@ -42,7 +42,7 @@ dcc!
 
 
 # spim!
-Aims to simplify the `spim` command. The script can be used in two ways:
+Simplifies the `spim` command. The script can be used in two ways:
 ```bash
 spim! <params>
 ```
@@ -63,7 +63,7 @@ spim!
 
 
 # format!
-Aims to quickly format .c (and .cpp?), .s, and .asm files using `clang-format` and [mips_formatter](https://github.com/Chinosu/mips_formatter). Usage:
+Quickly formats .c (and .cpp?), .s, and .asm files using `clang-format` and [mips_formatter](https://github.com/Chinosu/mips_formatter). Usage:
 ```bash
 format!
 ```
