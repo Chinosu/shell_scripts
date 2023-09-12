@@ -86,7 +86,7 @@ find_latest_c_or_asm_file() {
 # Main script logic
 
 
-# Determine the params
+# Determine the args
 if [ $# -gt 0 ]; then
   filename="$1"
 else
