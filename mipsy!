@@ -1,0 +1,57 @@
+#!/bin/bash
+
+# Function to run SPIM on a file and filter out some lines from output
+run_mipsy() {
+  # Use read to split the input string
+  local filename
+  local params
+  read -r filename params <<< "$1"
+
+  if [ ! -f "$filename" ]; then
+    echo "File '$filename' does not exist."
+    exit 1
+  fi
+
+  1521 mipsy $filename $params
+}
+
+# Function to find the most recently modified .asm or .s file
+find_latest_asm_file() {
+  # Current directory only
+  # find . -maxdepth 1 \( -name "*.asm" -o -name "*.s" \) -printf '%T@ %p\n' \
+  #   | sort -k1,1nr \
+  #   | awk '{print substr($0, index($0,$2))}' \
+  #   | head -n 1
+
+  # Every directory
+  find ~/_ \( -name "*.asm" -o -name "*.s" \) -printf '%T@ %p\n' \
+    | sort -k1,1nr \
+    | awk '{print substr($0, index($0,$2))}' \
+    | head -n 1
+}
+
+# _____________________________________________________________________________
+# Main script logic
+
+# Check if 1521 is installed
+if ! command -v spim &> /dev/null; then
+  echo "1521 could not be found, please install it first."
+  exit 1
+fi
+
+params="$*"
+
+# Check if first argument does not end with .s or .asm
+if [[ $1 != *.s ]] && [[ $1 != *.asm ]]; then
+  latest_asm_file=$(find_latest_asm_file)
+  if [ -z "$latest_asm_file" ]; then 
+    echo "No .asm or .s files found."
+    exit 1
+  fi
+  params="$latest_asm_file $params"
+fi
+
+# Run mipsy
+run_mipsy "$params"
+
+exit 0
