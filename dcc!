@@ -19,6 +19,7 @@ run_dcc() {
 
   # Check if output is empty (if dcc returned zero warnings or errors)
   if [ -z "$output" ]; then
+    echo "::"
     ./"$temp_filename"
   fi
 
