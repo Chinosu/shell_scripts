@@ -22,12 +22,14 @@ Note that `dcc!` does not run the produced executable if `dcc` outputs a warning
 The script can be used like such:
 
 ```bash
-dcc! <file> <args>
+dcc! <file> <dcc_args> :: <executable_args>
 ```
 
 If `<file>` is not provided, `dcc!` will run with the most recently edited `.c` file in the `~/_` directory and its subdirectories. You can change this setting by modifying the script.
 
-If `<args>` are provided, they will be passed to `dcc` except for `-o` arguments.
+If `<dcc_args>` are provided, they will be passed to `dcc` except for `-o` arguments.
+
+If `:: <executable_args>` are provided, they will be passed to the executable.
 
 
 # mipsy!
