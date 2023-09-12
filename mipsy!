@@ -4,15 +4,15 @@
 run_mipsy() {
   # Use read to split the input string
   local filename
-  local params
-  read -r filename params <<< "$1"
+  local args
+  read -r filename args <<< "$1"
 
   if [ ! -f "$filename" ]; then
     echo "File '$filename' does not exist."
     exit 1
   fi
 
-  1521 mipsy $filename $params
+  1521 mipsy $filename $args
 }
 
 # Function to find the most recently modified .asm or .s file
@@ -39,7 +39,7 @@ if ! command -v spim &> /dev/null; then
   exit 1
 fi
 
-params="$*"
+args="$*"
 
 # Check if first argument does not end with .s or .asm
 if [[ $1 != *.s ]] && [[ $1 != *.asm ]]; then
@@ -48,10 +48,10 @@ if [[ $1 != *.s ]] && [[ $1 != *.asm ]]; then
     echo "No .asm or .s files found."
     exit 1
   fi
-  params="$latest_asm_file $params"
+  args="$latest_asm_file $args"
 fi
 
 # Run mipsy
-run_mipsy "$params"
+run_mipsy "$args"
 
 exit 0
