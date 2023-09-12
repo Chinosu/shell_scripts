@@ -58,7 +58,7 @@ format_asm() {
     exit 1
   fi
 
-  # Assume the location of mips_formatter
+  # Assume the location of mips_formatter to be
   formatter_path="../mips_formatter"
 
   python3 "$formatter_path"/main.py "$filename"
