@@ -2,6 +2,7 @@
 
 - [Introduction](#introduction)
 - [dcc!](#dcc)
+- [mipsy!](#mipsy)
 - [spim!](#spim)
 - [format!](#format)
 - [Installation](#installation)
@@ -14,67 +15,52 @@ Collection of shell scripts made by yours truly.
 
 
 # dcc!
-Simplifies the build-and-run process C programs. 
-
-The script properly handles warnings and errors from `dcc` and preserves `dcc`'s text formatting.
-
-The script can be used in two ways:
-
-```bash
-dcc! <params>
-```
-
-```bash
-dcc! <file_name>.c <params>
-```
-When `dcc!` is run with a `.c` file as its first parameter it will build that file with the provided `params`, run, and then delete it. Note that `'-o <word>'` arguments are discarded. 
-
-If a `.c` file is not its first parameter, it will perform the same action but with the most recently edited `.c` file in the `~/_` directory and its subdirectories. 
-
-You can change the directory to search by editing the script. 
-
-Note that `params` can be nothing, so the following is completely valid.
+Simplifies the build-and-run process C programs. The script properly handles warnings and errors from `dcc` and preserves `dcc`'s text formatting.
 
 Note that `dcc!` does not run the produced executable if `dcc` outputs a warning.
+
+The script can be used like such:
+
 ```bash
-dcc!
+dcc! <file> <params>
 ```
+
+If `<file>` is not provided, `dcc!` will run with the most recently edited `.c` file in the `~/_` directory and its subdirectories. You can change this setting by modifying the script.
+
+If `<params>` are provided, they will be passed to `dcc` except for `-o` arguments.
+
+
+# mipsy!
+Simplifies the `mipsy` command. The script's usage is defined as:
+
+```bash
+mipsy! <file> <params>
+```
+
+If `<file>` is not provided, `mipsy!` will run the most recently edited `.asm` or `.s` file in the `~/_` directory and its subdirectories. You can change this setting by modifying the script.
+
+If `<params>` are provided, they will be passed to `mipsy`.
 
 
 # spim!
-Simplifies the `spim` command. The script can be used in two ways:
+Simplifies the `spim` command. The script's usage is defined as:
 ```bash
-spim! <params>
+spim! <file> <params> 
 ```
 
-```bash
-spim! <file_name>(.s|.asm) <params>
-```
-When a `.s` or `.asm` file is specified as its first parameter it will simulate that file with the given `params` using spim. 
+If `<file>` is not provided, `mipsy!` will run with the most recently edited `.asm` or `.s` file in the `~/_` directory and its subdirectories. You can change this setting by modifying the script.
 
-If no such file is provided, it will simulate the most recently edited `.asm` or `.s` file in the `~/_` directory and its subdirectories. 
-
-You can change the directory to search by editing the script.
-
-Note that `params` can be nothing, so the following is completely valid.
-```bash
-spim!
-```
+If `<params>` are provided, they will be passed to `spim`.
 
 
 # format!
 Quickly formats .c (and .cpp?), .s, and .asm files using `clang-format` and [mips_formatter](https://github.com/Chinosu/mips_formatter). Usage:
 ```bash
-format!
+format! <file>
 ```
-Formats the most recently edited .c, .s, or .asm file in the directory `~/_` and its subdirectories (can be changed in the script).
+If `<file>` is not provided, `format!` will format the most recently edited .c, .s, or .asm file in the directory `~/_` and its subdirectories. You can change this setting by modifying the script.
 
-```bash
-format! <filename>(.c|.s|.asm)
-```
-Formats the specified .c, .s, or .asm file.
-
-**Note:** `format!` assumes that `mips_formatter` is located like such:
+**Note:** `format!` assumes that [mips_formatter](https://github.com/Chinosu/mips_formatter) is located like such:
 
 ```
 parent/
