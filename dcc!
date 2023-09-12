@@ -2,25 +2,24 @@
 
 # Function to build and run a file using dcc and then delete the executable.
 run_dcc() {
-  # Use read to split the input string
-  local filename
-  local params
-  read -r filename params <<< "$1"
+  local filename="$1"
+  local dcc_args="$2"
+  local executable_args="$2"
 
   if [ ! -f "$filename" ]; then
     echo "File '$filename' does not exist."
     exit 1
   fi
 
-  local output=$(dcc $filename $params -fsyntax-only 2>&1)
+  local output=$(dcc $filename $dcc_args -fsyntax-only 2>&1)
 
   local temp_filename=$(generate_unique_filename)
-  dcc $filename $params -o "$temp_filename" 2>&1
+  dcc $filename $dcc_args -o "$temp_filename" 2>&1
 
   # Check if output is empty (if dcc returned zero warnings or errors)
   if [ -z "$output" ]; then
     echo "::"
-    ./"$temp_filename"
+    ./"$temp_filename" $executable_args
   fi
 
   # Check if temp_filename exists in the current directory
@@ -83,20 +82,40 @@ if ! command -v dcc &> /dev/null; then
   exit 1
 fi
 
-# Remove '-o <word>'
-params=$(echo "$*" | sed -E 's/-o [^[:space:]]+//g')
+# Initialize variables
+cfile=""
+dcc_args=()
+executable_args=()
 
-# Check if first argument does not end with .c
-if [[ "$1" != *.c ]]; then
-  latest_c_file=$(find_latest_c_file)
-  if [ -z "$latest_c_file" ]; then
-    echo "No .c files found."
-    exit 1
-  fi
-  params="$latest_c_file $params"
+# Check if the first argument is a .c file, only if arguments are present
+if [[ $# -gt 0 && $1 == *.c ]]; then
+    cfile=$1
+    shift  # Shift arguments to the left
+else
+    cfile=$(find_latest_c_file)
 fi
 
+# Boolean variable to determine if we have encountered the separator
+found_separator=false
+
+# Loop over all arguments
+for arg in "$@"; do
+    if [ "$arg" == "::" ]; then
+        # Mark that we've encountered the separator
+        found_separator=true
+    elif $found_separator; then
+        # Append the argument to group 2 if we've encountered the separator
+        executable_args+=("$arg")
+    else
+        # Otherwise, append the argument to group 1
+        dcc_args+=("$arg")
+    fi
+done
+
+# Remove '-o <arg> from dcc args'
+dcc_args=$(echo "$dcc_args" | sed -E 's/-o [^[:space:]]+//g')
+
 # Run dcc
-run_dcc "$params"
+run_dcc "$cfile" "${dcc_args[*]}" "${executable_args[*]}"
 
 exit 0
