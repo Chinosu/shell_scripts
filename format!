@@ -58,8 +58,11 @@ format_asm() {
     exit 1
   fi
 
-  # Assume the location of mips_formatter to be
-  formatter_path="../mips_formatter"
+  # Get the directory of the currently executing script
+  local DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+  # Assume the location of mips_formatter relative to this script
+  formatter_path="$DIR/../mips_formatter"
 
   python3 "$formatter_path"/main.py "$filename"
 }
