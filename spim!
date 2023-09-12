@@ -4,15 +4,15 @@
 run_spim() {
   # Use read to split the input string
   local filename
-  local params
-  read -r filename params <<< "$1"
+  local args
+  read -r filename args <<< "$1"
 
   if [ ! -f "$filename" ]; then
     echo "File '$filename' does not exist."
     exit 1
   fi
 
-  spim -file $filename $params # \
+  spim -file $filename $args # \
     # | grep -v \
     #   -e "SPIM Version 8.0 of January 8, 2010" \
     #   -e "Copyright 1990-2010, James R. Larus." \
@@ -46,7 +46,7 @@ if ! command -v spim &> /dev/null; then
   exit 1
 fi
 
-params="$*"
+args="$*"
 
 # Check if first argument does not end with .s or .asm
 if [[ $1 != *.s ]] && [[ $1 != *.asm ]]; then
@@ -55,10 +55,10 @@ if [[ $1 != *.s ]] && [[ $1 != *.asm ]]; then
     echo "No .asm or .s files found."
     exit 1
   fi
-  params="$latest_asm_file $params"
+  args="$latest_asm_file $args"
 fi
 
 # Run SPIM
-run_spim "$params"
+run_spim "$args"
 
 exit 0
