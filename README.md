@@ -22,35 +22,35 @@ Note that `dcc!` does not run the produced executable if `dcc` outputs a warning
 The script can be used like such:
 
 ```bash
-dcc! <file> <params>
+dcc! <file> <args>
 ```
 
 If `<file>` is not provided, `dcc!` will run with the most recently edited `.c` file in the `~/_` directory and its subdirectories. You can change this setting by modifying the script.
 
-If `<params>` are provided, they will be passed to `dcc` except for `-o` arguments.
+If `<args>` are provided, they will be passed to `dcc` except for `-o` arguments.
 
 
 # mipsy!
 Simplifies the `mipsy` command. The script's usage is defined as:
 
 ```bash
-mipsy! <file> <params>
+mipsy! <file> <args>
 ```
 
 If `<file>` is not provided, `mipsy!` will run the most recently edited `.asm` or `.s` file in the `~/_` directory and its subdirectories. You can change this setting by modifying the script.
 
-If `<params>` are provided, they will be passed to `mipsy`.
+If `<args>` are provided, they will be passed to `mipsy`.
 
 
 # spim!
 Simplifies the `spim` command. The script's usage is defined as:
 ```bash
-spim! <file> <params> 
+spim! <file> <args> 
 ```
 
 If `<file>` is not provided, `mipsy!` will run with the most recently edited `.asm` or `.s` file in the `~/_` directory and its subdirectories. You can change this setting by modifying the script.
 
-If `<params>` are provided, they will be passed to `spim`.
+If `<args>` are provided, they will be passed to `spim`.
 
 
 # format!
