@@ -4,7 +4,7 @@
 run_dcc() {
   local filename="$1"
   local dcc_args="$2"
-  local executable_args="$2"
+  local executable_args="$3"
 
   if [ ! -f "$filename" ]; then
     echo "File '$filename' does not exist."
