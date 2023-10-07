@@ -1,33 +1,5 @@
 #!/bin/bash
 
-# Function to build and run a file using dcc and then delete the executable.
-run_dcc() {
-  local filename="$1"
-  local dcc_args="$2"
-  local executable_args="$3"
-
-  if [ ! -f "$filename" ]; then
-    echo "File '$filename' does not exist."
-    exit 1
-  fi
-
-  local output=$(dcc $filename $dcc_args -fsyntax-only 2>&1)
-
-  local temp_filename=$(generate_unique_filename)
-  dcc $filename $dcc_args -o "$temp_filename" 2>&1
-
-  # Check if output is empty (if dcc returned zero warnings or errors)
-  if [ -z "$output" ]; then
-    echo "::"
-    ./"$temp_filename" $executable_args
-  fi
-
-  # Check if temp_filename exists in the current directory
-  if [ -f "$temp_filename" ]; then
-    rm ./"$temp_filename"
-  fi
-}
-
 # Function to find the most recently modified .c file
 find_latest_c_file() {
   # Current directory only
@@ -83,16 +55,16 @@ if ! command -v dcc &> /dev/null; then
 fi
 
 # Initialize variables
-cfile=""
+filename=""
 dcc_args=()
 executable_args=()
 
 # Check if the first argument is a .c file, only if arguments are present
 if [[ $# -gt 0 && $1 == *.c ]]; then
-    cfile=$1
+    filename=$1
     shift  # Shift arguments to the left
 else
-    cfile=$(find_latest_c_file)
+    filename=$(find_latest_c_file)
 fi
 
 # Boolean variable to determine if we have encountered the separator
@@ -115,7 +87,27 @@ done
 # Remove '-o <arg> from dcc args'
 dcc_args=$(echo "$dcc_args" | sed -E 's/-o [^[:space:]]+//g')
 
-# Run dcc
-run_dcc "$cfile" "${dcc_args[*]}" "${executable_args[*]}"
+
+# Build and run file using dcc and then delete the executable.
+if [ ! -f "$filename" ]; then
+  echo "File '$filename' does not exist."
+  exit 1
+fi
+
+output=$(dcc $filename $dcc_args -fsyntax-only 2>&1)
+
+temp_filename=$(generate_unique_filename)
+dcc $filename ${dcc_args[@]} -o "$temp_filename" 2>&1
+
+# Check if output is empty (if dcc returned zero warnings or errors)
+if [ -z "$output" ]; then
+  echo "::"
+  ./"$temp_filename" "${executable_args[@]}"
+fi
+
+# Check if temp_filename exists in the current directory
+if [ -f "$temp_filename" ]; then
+  rm ./"$temp_filename"
+fi
 
 exit 0
