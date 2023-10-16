@@ -1,0 +1,78 @@
+#!/usr/bin/env sh
+
+user='z5488485'
+host="login${user: -1}.cse.unsw.edu.au"
+local_path="$HOME/Code/cse"
+remote_path='_'
+exclude_args=(
+--exclude='gitlab/'
+--exclude='github/'
+--exclude='node_modules/'
+)
+
+# determine where we are relative to the local path
+rel=${PWD##${local_path}}
+
+# if we don't have arguments, we give the user a shell on the remote cse machine. (non-interactive SSH)
+if [[ -z "$1" ]]; then
+# in the case that we're not in our mountpoint, provide a shell in their home directory.
+if [ "$PWD" = "$rel" ]; then
+    ssh "$user@$host"
+# if within the mountpoint, cd to the equivalent dir on the remote before providing a shell (thanks @ralismark)
+else
+    ssh "$user@$host" -t "cd $(printf "%q" "$remote_path$rel"); exec \$SHELL -l"
+fi
+
+exit 0
+fi
+
+case "$1" in
+'get' )
+    rsync -av --dry-run --delete -e ssh "${exclude_args[@]}" $user@$host:$remote_path/ $local_path
+
+    # Ask user for confirmation
+    read -p "Do you want to proceed with the above changes? (y/n) " answer
+    case $answer in
+    [Yy]* )
+        # Perform actual sync
+        rsync -av --delete -e ssh "${exclude_args[@]}" $user@$host:$remote_path/ $local_path
+        ;;
+    * )
+        echo "Aborted."
+        ;;
+    esac
+
+    exit 0
+    ;;
+'set' )
+    # NOTE: set does not delete files.
+    echo 'Performing dry run...'
+    rsync -av --dry-run -e ssh "${exclude_args[@]}" $local_path/ $user@$host:$remote_path
+
+    # Ask user for confirmation
+    read -p "Do you want to proceed with the above changes? (y/n) " answer
+    case $answer in
+    [Yy]* )
+        # Perform actual sync
+        rsync -av -e ssh "${exclude_args[@]}" $local_path/ $user@$host:$remote_path
+        ;;
+    * )
+        echo "Aborted."
+        ;;
+    esac
+
+    exit 0
+    ;;
+* )
+    # We have a command to execute. (interactive SSH)
+    # in the case that we're not in our mountpoint, we'll execute in the home directory.
+    if [ "$PWD" = "$rel" ]; then
+    ssh -qt "$user@$host" "$@"
+    # if within the mountpoint, cd to the equivalent dir on the remote before executing (thanks @ralismark)
+    else
+    ssh "$user@$host" -qt "cd $(printf "%q" "$remote_path$rel") && $(printf "%q " "$@")"
+    fi
+
+    exit 0
+    ;;
+esac
