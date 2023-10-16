@@ -15,15 +15,15 @@ rel=${PWD##${local_path}}
 
 # if we don't have arguments, we give the user a shell on the remote cse machine. (non-interactive SSH)
 if [[ -z "$1" ]]; then
-# in the case that we're not in our mountpoint, provide a shell in their home directory.
-if [ "$PWD" = "$rel" ]; then
-    ssh "$user@$host"
-# if within the mountpoint, cd to the equivalent dir on the remote before providing a shell
-else
-    ssh "$user@$host" -t "cd $(printf "%q" "$remote_path$rel"); exec \$SHELL -l"
-fi
+    # in the case that we're not in our mountpoint, provide a shell in their home directory.
+    if [ "$PWD" = "$rel" ]; then
+        ssh "$user@$host"
+    # if within the mountpoint, cd to the equivalent dir on the remote before providing a shell
+    else
+        ssh "$user@$host" -t "cd $(printf "%q" "$remote_path$rel"); exec \$SHELL -l"
+    fi
 
-exit 0
+    exit 0
 fi
 
 case "$1" in
