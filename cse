@@ -28,7 +28,7 @@ if [[ -z "$1" ]]; then
 fi
 
 case "$1" in
-'get' )
+'pull' )
     # # CHECKFUL
     # rsync -av --dry-run --delete -e ssh "${exclude_args[@]}" $user@$host:$remote_path/ $local_path
 
@@ -49,8 +49,8 @@ case "$1" in
 
     exit 0
     ;;
-'set' )
-    # NOTE: set does not delete files.
+'push' )
+    # NOTE: push does not delete files.
 
     # # CHECKFUL
     # echo 'Performing dry run...'
