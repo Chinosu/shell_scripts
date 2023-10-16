@@ -1,6 +1,7 @@
 # Table of Contents
 
 - [Introduction](#introduction)
+- [cse](#cse)
 - [dcc!](#dcc)
 - [mipsy!](#mipsy)
 - [spim!](#spim)
@@ -14,6 +15,54 @@ Collection of shell scripts made by yours truly.
 **Note:** these scripts are written for Linux, and may not work on macOS or Windows.
 
 
+# cse
+
+## Overview:
+This script facilitates synchronization and interaction with remote systems, specifically tailored for the CSE environment at UNSW. It provides capabilities to:
+- SSH into the remote system based on the user's current directory.
+- Sync files from the remote system to the local system (get).
+- Sync files from the local system to the remote system (set).
+- Execute arbitrary commands on the remote system.
+
+## Prerequisites:
+- Ensure you have `ssh` and `rsync` installed on your machine.
+- The script assumes a specific naming convention for the host, based on the user's ID.
+
+## Usage:
+
+### 1. SSH:
+Simply run the script without any arguments:
+```sh
+cse
+```
+This will SSH you into the remote CSE machine. If your current directory matches the local path (by default `$HOME/Code/cse`), the script will attempt to navigate you to the corresponding directory on the remote.
+
+### 2. Synchronization:
+The script uses `rsync` for synchronization. The following options are available:
+
+- **get** : Syncs files from the remote system to the local machine.
+  ```sh
+  cse get
+  ```
+  It performs a dry run first and asks for user confirmation before actual sync.
+
+- **set** : Syncs files from the local machine to the remote system.
+  ```sh
+  cse set
+  ```
+  This operation doesn't delete files on the remote. Similar to 'get', it performs a dry run and asks for user confirmation.
+
+### 3. Execute Commands:
+To run a command on the remote system:
+```sh
+cse [COMMAND]
+```
+Where `[COMMAND]` is any command you wish to run on the remote system. If your current directory matches the local path, the script will attempt to execute the command in the corresponding directory on the remote.
+
+## Notes:
+
+- The script excludes certain directories by default during sync operations. These are: `gitlab/`, `github/`, and `node_modules/`. Modify the `exclude_args` array if you want to change this behavior.
+  
 # dcc!
 Simplifies the build-and-run process C programs. The script properly handles warnings and errors from `dcc` and preserves `dcc`'s text formatting.
 

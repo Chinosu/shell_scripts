@@ -18,7 +18,7 @@ if [[ -z "$1" ]]; then
 # in the case that we're not in our mountpoint, provide a shell in their home directory.
 if [ "$PWD" = "$rel" ]; then
     ssh "$user@$host"
-# if within the mountpoint, cd to the equivalent dir on the remote before providing a shell (thanks @ralismark)
+# if within the mountpoint, cd to the equivalent dir on the remote before providing a shell
 else
     ssh "$user@$host" -t "cd $(printf "%q" "$remote_path$rel"); exec \$SHELL -l"
 fi
