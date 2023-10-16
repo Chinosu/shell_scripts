@@ -29,38 +29,47 @@ fi
 
 case "$1" in
 'get' )
-    rsync -av --dry-run --delete -e ssh "${exclude_args[@]}" $user@$host:$remote_path/ $local_path
+    # # CHECKFUL
+    # rsync -av --dry-run --delete -e ssh "${exclude_args[@]}" $user@$host:$remote_path/ $local_path
 
-    # Ask user for confirmation
-    read -p "Do you want to proceed with the above changes? (y/n) " answer
-    case $answer in
-    [Yy]* )
-        # Perform actual sync
-        rsync -av --delete -e ssh "${exclude_args[@]}" $user@$host:$remote_path/ $local_path
-        ;;
-    * )
-        echo "Aborted."
-        ;;
-    esac
+    # # Ask user for confirmation
+    # read -p "Do you want to proceed with the above changes? (y/n) " answer
+    # case $answer in
+    # [Yy]* )
+    #     # Perform actual sync
+    #     rsync -av --delete -e ssh "${exclude_args[@]}" $user@$host:$remote_path/ $local_path
+    #     ;;
+    # * )
+    #     echo "Aborted."
+    #     ;;
+    # esac
+
+    # CHECKLESS
+    rsync -av --delete -e ssh "${exclude_args[@]}" $user@$host:$remote_path/ $local_path
 
     exit 0
     ;;
 'set' )
     # NOTE: set does not delete files.
-    echo 'Performing dry run...'
-    rsync -av --dry-run -e ssh "${exclude_args[@]}" $local_path/ $user@$host:$remote_path
 
-    # Ask user for confirmation
-    read -p "Do you want to proceed with the above changes? (y/n) " answer
-    case $answer in
-    [Yy]* )
-        # Perform actual sync
-        rsync -av -e ssh "${exclude_args[@]}" $local_path/ $user@$host:$remote_path
-        ;;
-    * )
-        echo "Aborted."
-        ;;
-    esac
+    # # CHECKFUL
+    # echo 'Performing dry run...'
+    # rsync -av --dry-run -e ssh "${exclude_args[@]}" $local_path/ $user@$host:$remote_path
+
+    # # Ask user for confirmation
+    # read -p "Do you want to proceed with the above changes? (y/n) " answer
+    # case $answer in
+    # [Yy]* )
+    #     # Perform actual sync
+    #     rsync -av -e ssh "${exclude_args[@]}" $local_path/ $user@$host:$remote_path
+    #     ;;
+    # * )
+    #     echo "Aborted."
+    #     ;;
+    # esac
+
+    # CHECKLESS
+    rsync -av -e ssh "${exclude_args[@]}" $local_path/ $user@$host:$remote_path
 
     exit 0
     ;;
