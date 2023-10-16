@@ -20,8 +20,8 @@ Collection of shell scripts made by yours truly.
 ## Overview:
 This script facilitates synchronization and interaction with remote systems, specifically tailored for the CSE environment at UNSW. It provides capabilities to:
 - SSH into the remote system based on the user's current directory.
-- Sync files from the remote system to the local system (get).
-- Sync files from the local system to the remote system (set).
+- Sync files from the remote system to the local system (pull).
+- Sync files from the local system to the remote system (push).
 - Execute arbitrary commands on the remote system.
 
 ## Prerequisites:
@@ -40,17 +40,14 @@ This will SSH you into the remote CSE machine. If your current directory matches
 ### 2. Synchronization:
 The script uses `rsync` for synchronization. The following options are available:
 
-- **get** : Syncs files from the remote system to the local machine.
+- **pull** : Syncs files from the remote system to the local machine.
   ```sh
-  cse get
+  cse pull
   ```
-  It performs a dry run first and asks for user confirmation before actual sync.
-
-- **set** : Syncs files from the local machine to the remote system.
+- **push** : Syncs files from the local machine to the remote system. This operation doesn't delete files on the remote.
   ```sh
-  cse set
+  cse push
   ```
-  This operation doesn't delete files on the remote. Similar to 'get', it performs a dry run and asks for user confirmation.
 
 ### 3. Execute Commands:
 To run a command on the remote system:
