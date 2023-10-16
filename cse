@@ -1,7 +1,8 @@
 #!/usr/bin/env sh
 
 user='z5488485'
-host="login${user: -1}.cse.unsw.edu.au"
+# host="login${user: -1}.cse.unsw.edu.au" # use loginX.cse
+host="cse.unsw.edu.au"
 local_path="$HOME/Code/cse"
 remote_path='_'
 exclude_args=(
