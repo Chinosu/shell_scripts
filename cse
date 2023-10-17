@@ -1,7 +1,6 @@
 #!/usr/bin/env sh
 
 user='z5488485'
-# host="login${user: -1}.cse.unsw.edu.au" # use loginX.cse
 host="cse.unsw.edu.au"
 local_path="$HOME/Code/cse"
 remote_path='_'
@@ -15,75 +14,42 @@ exclude_args=(
 # determine where we are relative to the local path
 rel=${PWD##${local_path}}
 
-# if we don't have arguments, we give the user a shell on the remote cse machine. (non-interactive SSH)
-if [[ -z "$1" ]]; then
-    # in the case that we're not in our mountpoint, provide a shell in their home directory.
-    if [ "$PWD" = "$rel" ]; then
-        ssh "$user@$host"
-    # if within the mountpoint, cd to the equivalent dir on the remote before providing a shell
-    else
-        ssh "$user@$host" -t "cd $(printf "%q" "$remote_path$rel"); exec \$SHELL -l"
-    fi
+case $1 in
+    'ssh')
+        if [ "$PWD" = "$rel" ]; then 
+            # in the case that we're not in our mountpoint, provide a shell in their home directory.
+            ssh "$user@$host"
+        else
+            # if within the mountpoint, cd to the equivalent dir on the remote before providing a shell
+            ssh "$user@$host" -t "cd $(printf "%q" "$remote_path$rel"); exec \$SHELL -l"
+        fi
+        ;;
+    'push')
+        rsync -a -e ssh "${exclude_args[@]}" $local_path/ $user@$host:$remote_path
+        ;;
+    'pull')
+        rsync -a --delete-excluded -e ssh "${exclude_args[@]}" $user@$host:$remote_path/ $local_path
+        ;;
+    'exec')
+        shift 1
 
-    exit 0
-fi
+        # in the case that we're not in our mountpoint, we'll execute in the home directory.
+        if [ "$PWD" = "$rel" ]; then
+            ssh -qt "$user@$host" "$@"
+        # if within the mountpoint, cd to the equivalent dir on the remote before executing
+        else
+            ssh "$user@$host" -qt "cd $(printf "%q" "$remote_path$rel") && $(printf "%q " "$@")"
+        fi
 
-case "$1" in
-'pull' )
-    # # CHECKFUL
-    # rsync -av --dry-run --delete-excluded -e ssh "${exclude_args[@]}" $user@$host:$remote_path/ $local_path
-
-    # # Ask user for confirmation
-    # read -p "Do you want to proceed with the above changes? (y/n) " answer
-    # case $answer in
-    # [Yy]* )
-    #     # Perform actual sync
-    #     rsync -a --delete-excluded -e ssh "${exclude_args[@]}" $user@$host:$remote_path/ $local_path
-    #     ;;
-    # * )
-    #     echo "Aborted."
-    #     ;;
-    # esac
-
-    # CHECKLESS
-    rsync -a --delete-excluded -e ssh "${exclude_args[@]}" $user@$host:$remote_path/ $local_path
-
-    exit 0
-    ;;
-'push' )
-    # NOTE: push does not delete files.
-
-    # # CHECKFUL
-    # echo 'Performing dry run...'
-    # rsync -av --dry-run -e ssh "${exclude_args[@]}" $local_path/ $user@$host:$remote_path
-
-    # # Ask user for confirmation
-    # read -p "Do you want to proceed with the above changes? (y/n) " answer
-    # case $answer in
-    # [Yy]* )
-    #     # Perform actual sync
-    #     rsync -a -e ssh "${exclude_args[@]}" $local_path/ $user@$host:$remote_path
-    #     ;;
-    # * )
-    #     echo "Aborted."
-    #     ;;
-    # esac
-
-    # CHECKLESS
-    rsync -a -e ssh "${exclude_args[@]}" $local_path/ $user@$host:$remote_path
-
-    exit 0
-    ;;
-* )
-    # We have a command to execute. (interactive SSH)
-    # in the case that we're not in our mountpoint, we'll execute in the home directory.
-    if [ "$PWD" = "$rel" ]; then
-    ssh -qt "$user@$host" "$@"
-    # if within the mountpoint, cd to the equivalent dir on the remote before executing (thanks @ralismark)
-    else
-    ssh "$user@$host" -qt "cd $(printf "%q" "$remote_path$rel") && $(printf "%q " "$@")"
-    fi
-
-    exit 0
-    ;;
+        exit 0
+        ;;
+    *)
+        echo "Usage: cse <command> [options]"
+        echo "Commands:"
+        echo "  ssh                         - SSH into the remote server."
+        echo "  push                        - Push data to the remote server."
+        echo "  pull                        - Pull data from the remote server."
+        echo "  exec <remote_command>       - Execute a command on the remote server."
+        exit 1
+        ;;
 esac
