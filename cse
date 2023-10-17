@@ -25,10 +25,10 @@ case $1 in
         fi
         ;;
     'push')
-        rsync -a -e ssh "${exclude_args[@]}" $local_path/ $user@$host:$remote_path
+        rsync -ai -e ssh "${exclude_args[@]}" $local_path/ $user@$host:$remote_path
         ;;
     'pull')
-        rsync -a --delete-excluded -e ssh "${exclude_args[@]}" $user@$host:$remote_path/ $local_path
+        rsync -ai --delete-excluded -e ssh "${exclude_args[@]}" $user@$host:$remote_path/ $local_path
         ;;
     'exec')
         shift 1
