@@ -26,40 +26,47 @@ This script facilitates synchronization and interaction with remote systems, spe
 
 ## Prerequisites:
 - Ensure you have `ssh` and `rsync` installed on your machine.
-- The script assumes a specific naming convention for the host, based on the user's ID.
+- Ensure you have set up SSH key-based authentication for UNSW CSE.
 
-## Usage:
+## Configuration:
+By default, the script is configured for a specific user and host. Moreover, some directories are excluded during `push` and `pull` operations. If you want to modify these configurations, adjust the variables at the beginning of the script accordingly.
 
-### 1. SSH:
-Simply run the script without any arguments:
-```sh
-cse
+## Usage
+
+To use the script, invoke the `cse` command followed by a specified sub-command:
+
+### SSH
+
+```bash
+cse ssh
 ```
-This will SSH you into the remote CSE machine. If your current directory matches the local path (by default `$HOME/Code/cse`), the script will attempt to navigate you to the corresponding directory on the remote.
 
-### 2. Synchronization:
-The script uses `rsync` for synchronization. The following options are available:
+This will establish an SSH connection to the server. If you're within a recognized local path, it will change to the corresponding directory on the remote server before starting the session.
 
-- **pull** : Syncs files from the remote system to the local machine.
-  ```sh
-  cse pull
-  ```
-- **push** : Syncs files from the local machine to the remote system. This operation doesn't delete files on the remote.
-  ```sh
-  cse push
-  ```
+### Push
 
-### 3. Execute Commands:
-To run a command on the remote system:
-```sh
-cse [COMMAND]
+```bash
+cse push
 ```
-Where `[COMMAND]` is any command you wish to run on the remote system. If your current directory matches the local path, the script will attempt to execute the command in the corresponding directory on the remote.
 
-## Notes:
+This command will push data from the configured local path to the remote server, excluding the specified directories. This command will not push deletions.
 
-- The script excludes certain directories by default during sync operations. These are: `gitlab/`, `github/`, and `node_modules/`. Modify the `exclude_args` array if you want to change this behavior.
-  
+### Pull
+
+```bash
+cse pull
+```
+
+This command will pull data from the remote server to the configured local path, again excluding the specified directories.
+
+### Execute a command
+
+```bash
+cse exec <remote_command>
+```
+
+This will execute the provided `<remote_command>` on the remote server. If you're within the recognized local path, the command will be executed in the corresponding directory on the remote server.
+
 # dcc!
 Simplifies the build-and-run process C programs. The script properly handles warnings and errors from `dcc` and preserves `dcc`'s text formatting.
 
