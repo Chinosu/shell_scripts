@@ -9,6 +9,7 @@ exclude_args=(
 --exclude='gitlab/'
 --exclude='github/'
 --exclude='node_modules/'
+--exclude='gh'
 )
 
 # determine where we are relative to the local path
