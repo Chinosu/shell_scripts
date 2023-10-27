@@ -71,6 +71,8 @@ case $1 in
     *)
         echo "Usage: cse <command> [options]"
         echo "Commands:"
+        echo "  mount                       - Mount remote server files."
+        echo "  umount                      - Unmount remote server files."
         echo "  ssh                         - SSH into the remote server."
         echo "  push                        - Push data to the remote server."
         echo "  pull                        - Pull data from the remote server."

@@ -35,6 +35,16 @@ By default, the script is configured for a specific user and host. Moreover, som
 
 To use the script, invoke the `cse` command followed by a specified sub-command:
 
+### MOUNT
+```bash
+cse mount
+```
+
+### UMOUNT
+```bash
+cse umount
+```
+
 ### SSH
 
 ```bash
