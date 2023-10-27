@@ -2,7 +2,7 @@
 
 user='z5488485'
 host="cse.unsw.edu.au"
-local_path="$HOME/Code/cse"
+local_path="$HOME/Code/sshfs"
 remote_path='_'
 exclude_args=(
 --exclude='gitlab/'
@@ -24,6 +24,12 @@ prompt_for_confirmation() {
 rel=${PWD##${local_path}}
 
 case $1 in
+    'mount')
+        sshfs -o idmap=user -C $user@$host:$remote_path $local_path
+        ;;
+    'umount')
+        umount -f $local_path
+        ;;
     'ssh')
         if [ "$PWD" = "$rel" ]; then 
             # in the case that we're not in our mountpoint, provide a shell in their home directory.
