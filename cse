@@ -11,6 +11,15 @@ exclude_args=(
 --exclude='gh/'
 )
 
+prompt_for_confirmation() {
+    read -p "Do you want to continue with this operation? (y/n) " choice
+    case "$choice" in 
+        y|Y ) ;;
+        n|N ) exit 0;;
+        * ) echo "Invalid choice." && exit 1;;
+    esac
+}
+
 # determine where we are relative to the local path
 rel=${PWD##${local_path}}
 
@@ -25,9 +34,19 @@ case $1 in
         fi
         ;;
     'push')
+         # Dry-run first
+        rsync --dry-run -ai -e ssh "${exclude_args[@]}" $local_path/ $user@$host:$remote_path
+        prompt_for_confirmation
+
+        # Actual sync
         rsync -ai -e ssh "${exclude_args[@]}" $local_path/ $user@$host:$remote_path
         ;;
     'pull')
+        # Dry-run first
+        rsync --dry-run -ai --delete-excluded -e ssh "${exclude_args[@]}" $user@$host:$remote_path/ $local_path
+        prompt_for_confirmation
+
+        # Actual sync
         rsync -ai --delete-excluded -e ssh "${exclude_args[@]}" $user@$host:$remote_path/ $local_path
         ;;
     'exec')
