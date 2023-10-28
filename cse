@@ -2,7 +2,7 @@
 
 user='z5488485'
 host="cse.unsw.edu.au"
-local_path="$HOME/Code/sshfs"
+local_path="$HOME/Code/cse"
 remote_path='_'
 exclude_args=(
 --exclude='gitlab/'
