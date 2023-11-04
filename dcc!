@@ -88,6 +88,8 @@ done
 dcc_args=$(echo "$dcc_args" | sed -E 's/-o [^[:space:]]+//g')
 
 
+
+
 # Build and run file using dcc and then delete the executable.
 if [ ! -f "$filename" ]; then
   echo "File '$filename' does not exist."

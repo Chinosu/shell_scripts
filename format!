@@ -32,7 +32,7 @@ format_c() {
     BreakBeforeBinaryOperators: All,
     BreakBeforeBraces: Attach,
     BreakStringLiterals: true,
-    ColumnLimit: 79,
+    ColumnLimit: 80,
     IndentWidth: 4,
     IndentWrappedFunctionNames: true,
     MaxEmptyLinesToKeep: 2,
