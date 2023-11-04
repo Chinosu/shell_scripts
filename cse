@@ -1,0 +1,82 @@
+#!/usr/bin/env sh
+
+user='z5488485'
+host="cse.unsw.edu.au"
+local_path="$HOME/Code/cse"
+remote_path='_'
+exclude_args=(
+--exclude='gitlab/'
+--exclude='github/'
+--exclude='node_modules/'
+--exclude='gh/'
+)
+
+prompt_for_confirmation() {
+    read -p "Do you want to continue with this operation? (y/n) " choice
+    case "$choice" in 
+        y|Y ) ;;
+        n|N ) exit 0;;
+        * ) echo "Invalid choice." && exit 1;;
+    esac
+}
+
+# determine where we are relative to the local path
+rel=${PWD##${local_path}}
+
+case $1 in
+    'mount')
+        sshfs -o reconnect -o follow_symlinks -o idmap=user -C $user@$host:$remote_path $local_path
+        ;;
+    'umount')
+        umount -f $local_path
+        ;;
+    'ssh')
+        if [ "$PWD" = "$rel" ]; then 
+            # in the case that we're not in our mountpoint, provide a shell in their home directory.
+            ssh "$user@$host"
+        else
+            # if within the mountpoint, cd to the equivalent dir on the remote before providing a shell
+            ssh "$user@$host" -t "cd $(printf "%q" "$remote_path$rel"); exec \$SHELL -l"
+        fi
+        ;;
+    'push')
+         # Dry-run first
+        rsync --dry-run -ai -e ssh "${exclude_args[@]}" $local_path/ $user@$host:$remote_path
+        prompt_for_confirmation
+
+        # Actual sync
+        rsync -ai -e ssh "${exclude_args[@]}" $local_path/ $user@$host:$remote_path
+        ;;
+    'pull')
+        # Dry-run first
+        rsync --dry-run -ai --delete-excluded -e ssh "${exclude_args[@]}" $user@$host:$remote_path/ $local_path
+        prompt_for_confirmation
+
+        # Actual sync
+        rsync -ai --delete-excluded -e ssh "${exclude_args[@]}" $user@$host:$remote_path/ $local_path
+        ;;
+    'exec')
+        shift 1
+
+        # in the case that we're not in our mountpoint, we'll execute in the home directory.
+        if [ "$PWD" = "$rel" ]; then
+            ssh -qt "$user@$host" "$@"
+        # if within the mountpoint, cd to the equivalent dir on the remote before executing
+        else
+            ssh "$user@$host" -qt "cd $(printf "%q" "$remote_path$rel") && $(printf "%q " "$@")"
+        fi
+
+        exit 0
+        ;;
+    *)
+        echo "Usage: cse <command> [options]"
+        echo "Commands:"
+        echo "  mount                       - Mount remote server files."
+        echo "  umount                      - Unmount remote server files."
+        echo "  ssh                         - SSH into the remote server."
+        echo "  push                        - Push data to the remote server."
+        echo "  pull                        - Pull data from the remote server."
+        echo "  exec <remote_command>       - Execute a command on the remote server."
+        exit 1
+        ;;
+esac

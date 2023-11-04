@@ -1,6 +1,7 @@
 # Table of Contents
 
 - [Introduction](#introduction)
+- [cse](#cse)
 - [dcc!](#dcc)
 - [mipsy!](#mipsy)
 - [spim!](#spim)
@@ -13,6 +14,68 @@ Collection of shell scripts made by yours truly.
 
 **Note:** these scripts are written for Linux, and may not work on macOS or Windows.
 
+
+# cse
+
+## Overview:
+This script facilitates synchronization and interaction with remote systems, specifically tailored for the CSE environment at UNSW. It provides capabilities to:
+- SSH into the remote system based on the user's current directory.
+- Sync files from the remote system to the local system (pull).
+- Sync files from the local system to the remote system (push).
+- Execute arbitrary commands on the remote system.
+
+## Prerequisites:
+- Ensure you have `ssh` and `rsync` installed on your machine.
+- Ensure you have set up SSH key-based authentication for UNSW CSE.
+
+## Configuration:
+By default, the script is configured for a specific user and host. Moreover, some directories are excluded during `push` and `pull` operations. If you want to modify these configurations, adjust the variables at the beginning of the script accordingly.
+
+## Usage
+
+To use the script, invoke the `cse` command followed by a specified sub-command:
+
+### MOUNT
+```bash
+cse mount
+```
+
+### UMOUNT
+```bash
+cse umount
+```
+
+### SSH
+
+```bash
+cse ssh
+```
+
+This will establish an SSH connection to the server. If you're within a recognized local path, it will change to the corresponding directory on the remote server before starting the session.
+
+### Push
+
+```bash
+cse push
+```
+
+This command will push data from the configured local path to the remote server, excluding the specified directories. This command will not push deletions.
+
+### Pull
+
+```bash
+cse pull
+```
+
+This command will pull data from the remote server to the configured local path, again excluding the specified directories.
+
+### Execute a command
+
+```bash
+cse exec <remote_command>
+```
+
+This will execute the provided `<remote_command>` on the remote server. If you're within the recognized local path, the command will be executed in the corresponding directory on the remote server.
 
 # dcc!
 Simplifies the build-and-run process C programs. The script properly handles warnings and errors from `dcc` and preserves `dcc`'s text formatting.
